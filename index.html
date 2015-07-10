@@ -1,0 +1,492 @@
+<!doctype html> <!--[if IE 9]>
+<html class="no-js ie9" lang="en">
+   <![endif]-->
+   <html class="no-js" lang="en">
+      <head>
+         <meta charset="utf-8"/>
+         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+         <link rel="shortcut icon" href="http://neo4j.com/wp-content/themes/neo4jzurb/favicon.ico"/>
+         <title>Neo4j Movies Example Application - The neo4jrestclient Edition | Developer Resources | Neo4j Graph Database</title>
+         <script type="text/javascript">
+            var _kmq = _kmq || [];
+            var _kmk = _kmk || 'a6a57b4b368caf34f5a6f2042eb075f9e559d779';
+            function _kms(u){
+                setTimeout(function(){
+                    var d = document, f = d.getElementsByTagName('script')[0],
+                        s = d.createElement('script');
+                    s.type = 'text/javascript'; s.async = true; s.src = u;
+                    f.parentNode.insertBefore(s, f);
+                }, 1);
+            }
+            _kms('//i.kissmetrics.com/i.js');
+            _kms('//doug1izaerwt3.cloudfront.net/' + _kmk + '.1.js');
+         </script> <script type="text/javascript">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            //Allow Linker
+            ga('create', 'UA-1192232-34','auto', {'allowLinker': true});
+            ga('send', 'pageview');
+
+            // Load the plugin.
+            ga('require', 'linker');
+
+            // Define which domains to autoLink.
+            ga('linker:autoLink', ['neo4j.org','neo4j.com','neotechnology.com','graphdatabases.com','graphconnect.com']);
+         </script>
+         <link rel="canonical" href="http://neo4j.com/guides/basic-data-modeling/"/>
+         <meta property="og:locale" content="en_US"/>
+         <meta property="og:type" content="article"/>
+         <meta property="og:title" content="Basic Data Modeling - Neo4j Graph Database"/>
+         <meta property="og:description" content="Please refer to the Neo4j Manual"/>
+         <meta property="og:url" content="http://neo4j.com/guides/basic-data-modeling/"/>
+         <meta property="og:site_name" content="Neo4j Graph Database"/>
+         <link rel="alternate" type="application/rss+xml" title="Neo4j Graph Database &raquo; Feed" href="http://neo4j.com/feed/"/>
+         <link rel="alternate" type="application/rss+xml" title="Neo4j Graph Database &raquo; Comments Feed" href="http://neo4j.com/comments/feed/"/>
+         <link rel="alternate" type="application/rss+xml" title="Neo4j Graph Database &raquo; Basic Data Modeling Comments Feed" href="http://neo4j.com/guides/basic-data-modeling/feed/"/>
+         <link rel='stylesheet' id='font-awesome-four-css' href="http://neo4j.com/wp-content/plugins/font-awesome-4-menus/css/font-awesome.min.css?ver=4.1.0" type='text/css' media='all'/>
+         <link rel='stylesheet' id='foundation-css' href="http://neo4j.com/wp-content/themes/neo4jzurb/assets/css/app.css?ver=4.0.0" type='text/css' media='screen'/>
+         <link rel='stylesheet' id='neo-codemirror-css' href="http://neo4j.com/wp-content/themes/neo4jzurb/assets/css/codemirror-neo.css?ver=4.0.0" type='text/css' media='screen'/>
+         <script type='text/javascript'>
+            /* <![CDATA[ */
+            var ajax_object = {"ajaxurl":"http:\/\/neo4j.com\/wp-admin\/admin-ajax.php"};
+            /* ]]> */
+         </script> <script type='text/javascript' src='http://neo4j.com/wp-content/plugins/neo4j-download/js/download.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/plugins/jquery-updater/js/jquery-2.1.0.min.js?ver=2.1.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/vendor/modernizr.min.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/foundation.min.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/vendor/codemirror.min.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/neo_codemirror.js?ver=4.0.0'></script> <script type='text/javascript' src='//use.typekit.net/rdt4xku.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/misc.js?ver=4.0.0'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/neo_calculator_v3.js?ver=4.0.0'></script>
+         <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://neo4j.com/xmlrpc.php?rsd"/>
+         <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://neo4j.com/wp-includes/wlwmanifest.xml"/>
+         <meta name="generator" content="WordPress 3.9.2"/>
+         <link rel='shortlink' href="http://neo4j.com/?p=32079"/>
+         <style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+      </head>
+      <body>
+         <div class="off-canvas-wrap">
+            <div class="inner-wrap">
+               <aside class="left-off-canvas-menu">
+                  <ul class="off-canvas-list">
+                     <li><a href="http://neo4j.com/use-cases/">Use Cases</a></li>
+                     <li><a href="http://neo4j.com/customers/">Customers</a></li>
+                     <li><a href="http://neo4j.com/community/">Community</a></li>
+                     <li><a href="http://neo4j.com/docs/">Docs</a></li>
+                     <li>
+                        <div class="medium-3 columns headspace-20">
+                           <div class="row collapse">
+                              <div class="small-10 columns">
+                                 <form role="search" method="get" id="searchform" class="searchform" action="http://neo4j.com/">
+                                    <input type="text" name="s" id="s"/>
+                              </div>
+                              <div class="small-2 columns"> <div class="button postfix"> <input type="image" id="searchsubmit" src="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/searchicon.png" style="vertical-align:middle;"/> </form> </div> </div>
+                           </div>
+                        </div>
+                     </li>
+                  </ul>
+               </aside>
+               <div class="marquee">
+                  <div class="navigation">
+                     <div class="navigation-large hide-for-small">
+                        <div class="row">
+                           <div class="medium-9 large-7 columns nav-list">
+                              <ul class="inline-list">
+                                 <li><a href="http://neo4j.com/index.php"><img src="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/logo-neo4j.svg" class="logo" alt="neo4j"></a></li>
+                                 <li class="nav-link"><a href="http://neo4j.com/use-cases/">Use Cases</a></li>
+                                 <li class="nav-link"><a href="http://neo4j.com/customers/">Customers</a></li>
+                                 <li class="nav-link"><a href="http://neo4j.com/community/">Community</a></li>
+                                 <li class="nav-link"><a href="http://neo4j.com/docs/">Docs</a></li>
+                              </ul>
+                           </div>
+                           <div class="medium-3 large-3 columns nav-search">
+                              <div class="row collapse">
+                                 <div class="small-10 columns">
+                                    <form role="search" method="get" id="searchform" class="searchform" action="http://neo4j.com/">
+                                       <input type="text" name="s" id="s"/>
+                                 </div>
+                                 <div class="small-2 columns"> <div class="button postfix"> <input type="image" id="searchsubmit" src="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/searchicon.png" style="vertical-align:middle;"/> </form> </div> </div>
+                              </div>
+                           </div>
+                           <div class="large-2 columns show-for-large-up"> <a href="http://neo4j.com/download/" class="tiny small button right">Download</a> </div>
+                        </div>
+                     </div>
+                     <nav class="tab-bar show-for-small">
+                        <section class="left-small"> <a class="left-off-canvas-toggle menu-icon"><span></span></a> </section>
+                        <section class="middle tab-bar-section"> <img src="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/logo-neo4j.svg" class="logo" alt="neo4j" </section>
+                     </nav>
+                  </div>
+                  <div class="row text-center">
+                     <div class="medium-10 small-centered columns">
+                        <h1 class="hero-title">Developer Resources</h1>
+                        <h2 class="subheader"></h2>
+                     </div>
+                  </div>
+               </div>
+               <article id="content" role="main">
+                  <style>
+                    .row { max-width: 62.5rem !important; }
+                     .lead
+                     {
+                     display: none;
+                     }
+                     section.row
+                     {
+                     padding: 0;
+                     }
+                     #content section.row
+                     {
+                     padding-left: .5em;
+                     padding-right: .5em;
+                     }
+                     .row
+                     {
+                     }
+                     #content section.row .accordion-navigation > a {
+                     background: none repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+                     padding: 0 !important;
+                     }
+                     .accordion .content { padding: 0; }
+                     .row .row { margin: auto; }
+                     .columns.medium-12
+                     {
+                     padding-left: 0;
+                     }
+                  </style>
+                  <style> .lead { display: none; } section.row { padding: 0; } #content section.row { max-width: 62.5rem; padding-left: .5em; padding-right: .5em; } .row { max-width: 80em; } #content section.row .accordion-navigation > a { padding: 0 !important; } .accordion .content { padding: 0; } .row .row { margin: auto; } .columns.medium-12 { padding-left: 0; } .fa-stack.fa-lg { color: #0f5788; display: block; float: left; height: 70px; margin-right: 1em; padding-right: 2em; width: 50px; } h3 { font-weight: normal; } strong, b { font-weight:600; font-color:#333; } .calloutsection { padding: 20px 0; } section { padding: 40px 0 0 0; } .marquee { height: auto; margin-top: 1em; } #main-content .entry-title { display: none; } #main-content .subheader { display: none; } .marquee h1, .marquee h2 { padding-top: 0; } #main-content .next-steps h5 { font-size: 12px; } #main-content .next-steps h3 { margin-bottom: 1em; } #main-content .content.active { display: block; } #main-content .content { display: none; } #main-content { padding-top: 0; } .use-case .tab-container .content.active { border-top: 1px solid rgba(15, 87, 136, 0.7); padding: 2em 1em 1em; } .tabs dd > a:hover { color: #3d5360; } .breadcrumbs > * a, .breadcrumbs > * span { color: #0f5788; text-transform: none; } .breadcrumbs > * { text-transform: none; } .top-bar { height: 80px; } #main-content .top-bar-section ul { margin-top: 1em; } .panel-pod p { font-size: 14px; font-weight: normal; line-height: 26px; } .panel-pod > a { display: block; margin-bottom: 1em; } .panel-pod p a { display: block; margin-top: 1em; } .panel-pod { text-align: left; } .tab-container { margin-bottom: 2em; } .panel-pod img { display: block; margin: auto; } #content h3 { font-weight: 100; } #content ul {}
+                  #content section.row .accordion-navigation > a {
+                      background: url("http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/collapse.png") no-repeat scroll 100% 50% transparent;
+                      border-bottom: 1px dashed #ddd;
+                      padding: 0 !important;
+                  }
+                  .accordion-navigation.active > a {
+                      background: url("http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/roll-up.png") no-repeat scroll 100% 50% transparent !important;
+                  }
+
+                  .accordion-navigation h5 {
+                      font-weight: 100;
+                      height: 2em;
+                      line-height: 2em;
+                      margin: 0;
+                  }
+
+                  .content ul {
+                  margin-top: 1em;
+                  }
+
+                  .breadcrumbs>*:before {
+                     content: "→";
+                     color: #aaa;
+                     margin: 0 0.75rem;
+                     position: relative;
+                     top: 0;
+                     }
+
+                  #content code
+                  {
+                   font-weight: 100;
+                  }
+
+                  #content h3
+                  {
+                   margin-bottom: .5em;
+                  }
+
+                  #content h5
+                  {
+                   font-weight: 100;
+                  }
+
+                  #content h4
+                  {
+                   font-weight: 400;
+                  }
+
+                  #content strong
+                  {
+                   font-weight: 400;
+                  }
+
+                  #content h4
+                  {
+                   margin-bottom: 1em;
+                  }
+
+                  #content .title {
+                      font-size: 20px;
+                  }
+
+                  #content .breadcrumbs { margin-bottom: 0; }
+                  </style>
+                  <div style="padding-left: 1em; padding-right: 1em;">
+                     <div class="row" style="padding: 10px;">
+                        <div class="columns large-12" style="padding:10px 0 0;">
+                           <ul class="breadcrumbs">
+                              <li><a href="/developer-resources">Developer Guides</a></li>
+                              <li><a href="../">Guide</a></li>
+                              <li class="current"><a href="#">Neo4j Movies Example Application - The neo4jrestclient Edition</a></li>
+                           </ul>
+                        </div>
+                     </div>
+                     <!-- <div class="row">
+                        <div class="columns large-12">
+                           <h1 style="font-size:2.1rem;">Neo4j Movies Example Application - The neo4jrestclient Edition</h1>
+                        </div>
+                     </div> -->
+                     <section class="row" style="padding:10px 0;">
+                        <div class="large-12 columns" style="padding-top:0;">
+                           <div id="content">
+                              <div class="sect1 "  >
+    
+<h3 id="_neo4j_movies_example_application_the_neo4jrestclient_edition">Neo4j Movies Example Application - The neo4jrestclient Edition</h3>
+
+<div class="sectionbody row">
+<div class="columns medium-12">
+<div class="sect2 columns medium-12" style='padding-left: 0;' >
+    
+<h4 id="_stack">Stack</h4>
+
+<div class="ulist">
+
+
+<ul>
+<li>
+<a href="https://github.com/versae/neo4j-rest-client">neo4jrestclient</a> - Neo4j Python driver
+</li>
+<li>
+<a href="http://flask.pocoo.org/">Flask</a> - Python microframework based on Werkzeug, Jinja 2 and good intentions.
+</li>
+<li>
+Neo4j-Server
+</li>
+<li>
+Frontend: jquery, bootstrap, <a href="http://d3js.org/">d3.js</a>
+</li>
+</ul>
+
+</div>
+</div>
+<div class="sect2 columns medium-12" style='padding-left: 0;' >
+    
+<h4 id="_setup">Setup</h4>
+
+
+
+<div class="paragraph">
+<p>First get yourself setup with <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtualenv</a> so we don&#8217;t break any other Python stuff you have on your machine. After you&#8217;ve got that installed let&#8217;s setup an environment for our app:</p>
+</div>
+
+<div class="listingblock">
+<div class="content code-panel" style="width: 100%; height: auto; border: medium 1px;">
+<pre style="font-size: 16px; font-weight: 100;"  class="code programlisting cm-s-neo"><code>$ virtualenv neo4jrestclient-movies
+$ source neo4jrestclient-movies/bin/activate</code></pre>
+</div>
+</div>
+
+
+<div class="paragraph">
+<p>The next step is to install the dependencies for the app:</p>
+</div>
+
+<div class="listingblock">
+<div class="content code-panel" style="width: 100%; height: auto; border: medium 1px;">
+<pre style="font-size: 16px; font-weight: 100;"  class="code programlisting cm-s-neo"><code>(neo4jrestclient-movies)$ pip install -r requirements.txt</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2 columns medium-12" style='padding-left: 0;' >
+    
+<h4 id="_run_locally">Run locally</h4>
+
+
+
+<div class="paragraph">
+<p>Start your local Neo4j Server (<a href="http://neo4j.com/download">Download &amp; Install</a>), open the <a href="http://localhost:7474">Neo4j Browser</a>. Then install the Movies data-set with <code>:play movies</code>, click the statement, and hit the triangular "Run" button.</p>
+</div>
+
+
+
+<div class="paragraph">
+<p>And finally let&#8217;s start up a Flask web server:</p>
+</div>
+
+<div class="listingblock">
+<div class="content code-panel" style="width: 100%; height: auto; border: medium 1px;">
+<pre style="font-size: 16px; font-weight: 100;"  class="code programlisting cm-s-neo"><code>(neo4jrestclient-movies)$ python movies.py
+ * Running on http://127.0.0.1:8080/</code></pre>
+</div>
+</div>
+
+
+<div class="paragraph">
+<p>Navigate to <a href="http://localhost:8080" class="bare">http://localhost:8080</a> and you should see your first Neo4j application</p>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+                           </div>
+                        </div>
+                     </section>
+                  </div>
+               </article>
+               <div class="row text-center hide-for-small hr-style">
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+                  <div class="medium-2 columns"> <object height="100%" width="100%" data="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/hr-image.svg" type="image/svg+xml"></object> </div>
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+               </div>
+               <div class="row text-center show-for-small">
+                  <div class="medium-12 columns">
+                     <hr>
+                  </div>
+               </div>
+               </article>
+               <div class="calloutsection">
+                  <div class="row">
+                     <div class="medium-8 small-centered columns text-center">
+                        <h3>Stay Connected</h3>
+                        <p>Sign up to find out more about Neo4j's upcoming events &amp; meetups.</p>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="medium-6 small-centered columns">
+                        <div class="row collapse">
+                           <div class="small-8 columns">
+                              <script src="//app-sjl.marketo.com/js/forms2/js/forms2.js"></script>
+                              <form id="mktoForm_519"></form>
+                              <script>MktoForms2.loadForm("//app-sjl.marketo.com", "773-GON-065", 519);</script>
+                           </div>
+                           <div class="small-4 columns"> <a href="#" id="signupbody" class="button postfix">Keep Me Connected &rsaquo;</a> </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <style> .mktoButtonWrap {display:none;} </style>
+               <script>
+                  var btn = document.getElementById("signupbody");
+                  btn.onclick = function(){
+                  MktoForms2.getForm(519).submit();
+                  };
+               </script>
+               <div class="row text-center hide-for-small hr-style">
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+                  <div class="medium-2 columns"> <object height="100%" width="100%" data="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/hr-image.svg" type="image/svg+xml"></object> </div>
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+               </div>
+               <div class="row text-center show-for-small">
+                  <div class="medium-12 columns">
+                     <hr>
+                  </div>
+               </div>
+               <footer id="footer">
+                  <div class="row">
+                     <div class="small-6 medium-3 columns">
+                        <h5>Learn & Try</h5>
+                        <ul>
+                           <li><a href="../about-neo4j">About Neo4j</a></li>
+                           <li><a href="../graph-concepts/">Graph Concepts</a></li>
+                           <li><a href="http://neo4j.com/use-cases/">Use Cases</a></li>
+                           <li><a href="http://neo4j.com/customers/">Our Customers</a></li>
+                           <li><a href="http://neo4j.com/download/">Download Neo4j</a></li>
+                           <li><a href="http://console.neo4j.org/">Live Neo4j Console</a></li>
+                           <li><a href="working-with-data/guide-neo4j-browser/">Neo4j Browser</a></li>
+                           <li><a href="http://gist.neo4j.org">Graph Gists</a></li>
+                        </ul>
+                     </div>
+                     <div class="small-6 medium-3 columns">
+                        <h5>Develop</h5>
+                        <ul>
+                           <li><a href="http://neo4j.com/docs/">Docs</a></li>
+                           <li><a href="../">Neo4j Guides</a></li>
+                           <li><a href="working-with-data/guide-importing-data-and-etl">Import Data</a></li>
+                           <li><a href="http://neo4j.com/contrib/">Select a Driver</a></li>
+                           <li><a href="cypher-query-language/guide-cypher-basics">Cypher Query Language</a></li>
+                           <li><a href="build-a-graph-data-model/guide-intro-to-graph-modeling">Data Modeling</a></li>
+                        </ul>
+                     </div>
+                     <div class="small-6 medium-3 columns">
+                        <h5>Connect with Neo4j</h5>
+                        <ul>
+                           <li><a href="http://neo4j.com/training/">Training</a></li>
+                           <li><a href="http://neo4j.com/events/">Events</a></li>
+                           <li><a href="http://neo4j.com/blog/">Blog</a></li>
+                           <li><a href="http://neo4j.com/community/#support">Support</a></li>
+                           <li><a href="http://neo4j.com/neo4j-partner-program/">Neo4j Partner Program</a></li>
+                           <li><a href="http://neotechnology.com/about/">About Neo Technology</a></li>
+                        </ul>
+                     </div>
+                     <div class="small-12 medium-3 columns">
+                        <h5><a href="http://neo4j.com/contact-us">Contact Us &rarr;</a></h5>
+                        <p>1-855-636-4532 <a href="mailto:info@neotechnology.com">US <i class="fi-mail"></i></a><br/> +44 808 189 0493 <a href="mailto:uk@neotechnology.com">UK <i class="fi-mail"></i></a><br/> +49 800 723 6231 <a href="mailto:vertrieb@neotechnology.com">Germany <i class="fi-mail"></i></a><br/> +33 (0)8 05 08 03 44 <a href="mailto:ventes@neotechnology.com">France <i class="fi-mail"></i></a></p>
+                        <h5>Get Neo4j News</h5>
+                        <p>Keep up with the latest graph database trends, tips &amp; events.</p>
+                        <div class="row collapse">
+                           <div class="small-9 columns">
+                              <script src="//app-sjl.marketo.com/js/forms2/js/forms2.js"></script>
+                              <form id="mktoForm_477"></form>
+                              <script>MktoForms2.loadForm("//app-sjl.marketo.com", "773-GON-065", 477);</script>
+                           </div>
+                           <div class="small-3 columns"> <a href="#" id="signup" class="button postfix">Go &rsaquo;</a> </div>
+                        </div>
+                     </div>
+                  </div>
+               </footer>
+               <style> #mktoForm_477 button {display:none;} #mktoForm_477 {margin-left:-20px;} </style>
+               <script>
+                  var btn = document.getElementById("signup");
+                  btn.onclick = function(){
+                    MktoForms2.getForm(477).submit();
+                  };
+               </script>
+               <div class="row text-center hide-for-small hr-style">
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+                  <div class="medium-2 columns"> <object height="100%" width="100%" data="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/images/hr-image.svg" type="image/svg+xml"></object> </div>
+                  <div class="medium-5 columns">
+                     <hr>
+                  </div>
+               </div>
+               <div class="row text-center show-for-small">
+                  <div class="medium-12 columns">
+                     <hr>
+                  </div>
+               </div>
+               <div class="row collapse copyright">
+                  <div class="small-12 medium-3 columns text-center">
+                     <p>&copy; 2014 <a href="http://neotechnology.com/">Neo Technology, Inc.</a></p>
+                  </div>
+                  <div class="small-12 medium-6 columns text-center">
+                     <code>&#40;graphs&#41;-&#91;&#58;ARE&#93;-&rsaquo;&#40;everywhere&#41;</code>
+                     <p>With &hearts; from Sweden &amp; the <a href="http://neo4j.com/community/">Neo4j</a> Community</p>
+                  </div>
+                  <div class="small-12 medium-3 columns text-center">
+                     <ul>
+                        <li><a href="http://neo4j.com/terms">Terms</a></li>
+                        <li><a href="http://neo4j.com/privacy-policy/">Privacy Policy</a></li>
+                     </ul>
+                  </div>
+               </div>
+               <a class="exit-off-canvas"></a>
+            </div>
+         </div>
+         <script src="http://munchkin.marketo.net/munchkin.js" type="text/javascript"></script> <script type="text/javascript">mktoMunchkin("773-GON-065");</script> <script type='text/javascript' src='http://neo4j.com/wp-content/plugins/akismet/_inc/form.js?ver=3.0.1'></script> <script type='text/javascript' src='http://neo4j.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script> <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.min.js?ver=3.9.2'></script> <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js?ver=3.9.2'></script> <script type='text/javascript' src='http://neo4j.com/wp-content/themes/neo4jzurb/assets/js/neo_d3.js?ver=3.9.2'></script> <script type='text/javascript' src='http://neo4j.com/wp-includes/js/comment-reply.min.js?ver=3.9.2'></script> <script>
+            jQuery(document).foundation({
+              tab: {
+                callback : function (tab) {
+                  $(window).trigger('resize');
+                }
+              }
+            });
+         </script> <script src="http://www.neo4j.com/wp-content/themes/neo4jzurb/assets/js/foundation/foundation.equalizer.js"></script>
+      </body>
+      <script type="text/javascript" src="http://munchkin.marketo.net/munchkin.js"></script> <script type="text/javascript">
+         mktoMunchkin("773-GON-065");
+      </script>
+   </html>

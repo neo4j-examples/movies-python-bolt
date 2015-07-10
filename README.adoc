@@ -1,0 +1,40 @@
+== Neo4j Movies Example Application - The neo4jrestclient Edition
+
+=== Stack
+
+* https://github.com/versae/neo4j-rest-client[neo4jrestclient] - Neo4j Python driver
+* http://flask.pocoo.org/[Flask] - Python microframework based on Werkzeug, Jinja 2 and good intentions.
+* Neo4j-Server
+* Frontend: jquery, bootstrap, http://d3js.org/[d3.js]
+
+
+=== Setup
+
+First get yourself setup with link:http://docs.python-guide.org/en/latest/dev/virtualenvs/[virtualenv] so we don't break any other Python stuff you have on your machine. After you've got that installed let's setup an environment for our app:
+
+[source]
+----
+$ virtualenv neo4jrestclient-movies
+$ source neo4jrestclient-movies/bin/activate
+----
+
+The next step is to install the dependencies for the app:
+
+[source]
+----
+(neo4jrestclient-movies)$ pip install -r requirements.txt
+----
+
+=== Run locally
+
+Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser]. Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
+
+And finally let's start up a Flask web server:
+
+[source]
+----
+(neo4jrestclient-movies)$ python movies.py
+ * Running on http://127.0.0.1:8080/
+----
+
+Navigate to http://localhost:8080 and you should see your first Neo4j application

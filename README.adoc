@@ -2,7 +2,7 @@
 
 === Stack
 
-* https://github.com/versae/neo4j-rest-client[neo4jrestclient] - Neo4j Python driver
+* https://github.com/neo4j/neo4j-python-driver[neo4j-python-driver] - Neo4j Bolt Driver for Python
 * http://flask.pocoo.org/[Flask] - Python microframework based on Werkzeug, Jinja 2 and good intentions.
 * Neo4j-Server
 * Frontend: jquery, bootstrap, http://d3js.org/[d3.js]

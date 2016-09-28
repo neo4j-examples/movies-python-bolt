@@ -100,12 +100,11 @@
                     function (data) {
                         var t = $("table#results tbody").empty();
                         if (!data || data.length == 0) return;
-                        data.forEach(function (row) {
-                            var movie = row.movie;
+                        data.forEach(function (movie) {
                             $("<tr><td class='movie'>" + movie.title + "</td><td>" + movie.released + "</td><td>" + movie.tagline + "</td></tr>").appendTo(t)
                                     .click(function() { showMovie($(this).find("td.movie").text());})
                         });
-                        showMovie(data[0].movie.title);
+                        showMovie(data[0].title);
                     }, "json");
             return false;
         }
@@ -127,7 +126,7 @@
 
     d3.json("/graph", function(error, graph) {
 		if (error) return;
-		
+
         force.nodes(graph.nodes).links(graph.links).start();
 
         var link = svg.selectAll(".link")

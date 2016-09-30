@@ -1,34 +1,60 @@
 #!/usr/bin/env python
 from json import dumps
 
-from flask import Flask, Response, request
+from flask import Flask, g, Response, request
 
-from neo4jrestclient.client import GraphDatabase, Node
+from neo4j.v1 import GraphDatabase, basic_auth, ResultError
 
 app = Flask(__name__, static_url_path='/static/')
-gdb = GraphDatabase("http://localhost:7474")
+driver = GraphDatabase.driver('bolt://localhost')
+# basic auth with: driver = GraphDatabase.driver('bolt://localhost', auth=basic_auth("<user>", "<pwd>"))
 
+def get_db():
+    if not hasattr(g, 'neo4j_db'):
+        g.neo4j_db = driver.session()
+    return g.neo4j_db
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'neo4j_db'):
+        g.neo4j_db.close()
 
 @app.route("/")
 def get_index():
     return app.send_static_file('index.html')
 
+def serialize_movie(movie):
+    return {
+        'id': movie['id'],
+        'title': movie['title'],
+        'summary': movie['summary'],
+        'released': movie['released'],
+        'duration': movie['duration'],
+        'rated': movie['rated'],
+        'tagline': movie['tagline']
+    }
+
+def serialize_cast(cast):
+    return {
+        'name': cast[0],
+        'job': cast[1],
+        'role': cast[2]
+    }
 
 @app.route("/graph")
 def get_graph():
-    query = ("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
+    db = get_db()
+    results = db.run("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
              "RETURN m.title as movie, collect(a.name) as cast "
-             "LIMIT {limit}")
-    results = gdb.query(query,
-                        params={"limit": request.args.get("limit", 100)})
+             "LIMIT {limit}", {"limit": request.args.get("limit", 100)})
     nodes = []
     rels = []
     i = 0
-    for movie, cast in results:
-        nodes.append({"title": movie, "label": "movie"})
+    for record in results:
+        nodes.append({"title": record["movie"], "label": "movie"})
         target = i
         i += 1
-        for name in cast:
+        for name in record['cast']:
             actor = {"title": name, "label": "actor"}
             try:
                 source = nodes.index(actor)
@@ -48,32 +74,29 @@ def get_search():
     except KeyError:
         return []
     else:
-        query = ("MATCH (movie:Movie) "
+        db = get_db()
+        results = db.run("MATCH (movie:Movie) "
                  "WHERE movie.title =~ {title} "
-                 "RETURN movie")
-        results = gdb.query(
-            query,
-            returns=Node,
-            params={"title": "(?i).*" + q + ".*"}
+                 "RETURN movie", {"title": "(?i).*" + q + ".*"}
         )
-        return Response(dumps([{"movie": row.properties}
-                               for [row] in results]),
+        return Response(dumps([serialize_movie(record['movie']) for record in results]),
                         mimetype="application/json")
 
 
 @app.route("/movie/<title>")
 def get_movie(title):
-    query = ("MATCH (movie:Movie {title:{title}}) "
+    db = get_db()
+    results = db.run("MATCH (movie:Movie {title:{title}}) "
              "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
              "RETURN movie.title as title,"
              "collect([person.name, "
              "         head(split(lower(type(r)), '_')), r.roles]) as cast "
-             "LIMIT 1")
-    results = gdb.query(query, params={"title": title})
-    title, cast = results[0]
-    return Response(dumps({"title": title,
-                           "cast": [dict(zip(("name", "job", "role"), member))
-                                    for member in cast]}),
+             "LIMIT 1", {"title": title})
+
+    result = results.single();
+    return Response(dumps({"title": result['title'],
+                           "cast": [serialize_cast(member)
+                                    for member in result['cast']]}),
                     mimetype="application/json")
 
 

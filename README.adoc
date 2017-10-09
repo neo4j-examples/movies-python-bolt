@@ -1,4 +1,4 @@
-== Neo4j Movies Example Application - The neo4jrestclient Edition
+== Neo4j Movies Example Application - The neo4j-python-driver (Bolt) Edition
 
 === Stack
 
@@ -14,26 +14,28 @@ First get yourself setup with link:http://docs.python-guide.org/en/latest/dev/vi
 
 [source]
 ----
-$ virtualenv neo4jrestclient-movies
-$ source neo4jrestclient-movies/bin/activate
+$ virtualenv neo4j-movies
+$ source neo4j-movies/bin/activate
 ----
 
 The next step is to install the dependencies for the app:
 
 [source]
 ----
-(neo4jrestclient-movies)$ pip install -r requirements.txt
+(neo4j-movies)$ pip install -r requirements.txt
 ----
 
 === Run locally
 
-Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser]. Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
+Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser]. 
+Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
 
 And finally let's start up a Flask web server:
 
 [source]
 ----
-(neo4jrestclient-movies)$ python movies.py
+(neo4j-movies)$ export NEO4J_PASSWORD="my-password"
+(neo4j-movies)$ python movies.py
  * Running on http://127.0.0.1:8080/
 ----
 

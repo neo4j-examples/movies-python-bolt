@@ -1,13 +1,15 @@
 #!/usr/bin/env python
+import os
 from json import dumps
-
 from flask import Flask, g, Response, request
 
-from neo4j.v1 import GraphDatabase, basic_auth, ResultError
+from neo4j.v1 import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
-driver = GraphDatabase.driver('bolt://localhost')
-# basic auth with: driver = GraphDatabase.driver('bolt://localhost', auth=basic_auth("<user>", "<pwd>"))
+
+password = os.getenv("NEO4J_PASSWORD")
+
+driver = GraphDatabase.driver('bolt://localhost',auth=basic_auth("neo4j", password))
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):

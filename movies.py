@@ -3,7 +3,7 @@ import os
 from json import dumps
 from flask import Flask, g, Response, request
 
-from neo4j.v1 import GraphDatabase, basic_auth
+from neo4j import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
 
@@ -48,7 +48,7 @@ def get_graph():
     db = get_db()
     results = db.run("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
              "RETURN m.title as movie, collect(a.name) as cast "
-             "LIMIT {limit}", {"limit": request.args.get("limit", 100)})
+             "LIMIT $limit", {"limit": request.args.get("limit", 100)})
     nodes = []
     rels = []
     i = 0
@@ -78,7 +78,7 @@ def get_search():
     else:
         db = get_db()
         results = db.run("MATCH (movie:Movie) "
-                 "WHERE movie.title =~ {title} "
+                 "WHERE movie.title =~ $title "
                  "RETURN movie", {"title": "(?i).*" + q + ".*"}
         )
         return Response(dumps([serialize_movie(record['movie']) for record in results]),
@@ -88,11 +88,11 @@ def get_search():
 @app.route("/movie/<title>")
 def get_movie(title):
     db = get_db()
-    results = db.run("MATCH (movie:Movie {title:{title}}) "
+    results = db.run("MATCH (movie:Movie {title:$title}) "
              "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
              "RETURN movie.title as title,"
              "collect([person.name, "
-             "         head(split(lower(type(r)), '_')), r.roles]) as cast "
+             "         head(split(toLower(type(r)), '_')), r.roles]) as cast "
              "LIMIT 1", {"title": title})
 
     result = results.single();

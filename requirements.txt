@@ -1,2 +1,2 @@
 Flask==0.10.1
-neo4j-driver==1.6.1
+neo4j==1.7.6

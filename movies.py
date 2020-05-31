@@ -7,9 +7,10 @@ from neo4j import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
 
-password = os.getenv("NEO4J_PASSWORD")
+url = os.getenv("NEO4J_URL","bolt://localhost")
+password = os.getenv("NEO4J_PASSWORD","test")
 
-driver = GraphDatabase.driver('bolt://localhost',auth=basic_auth("neo4j", password))
+driver = GraphDatabase.driver(url,auth=basic_auth("neo4j", password),encrypted=False)
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):

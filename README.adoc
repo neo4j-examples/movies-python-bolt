@@ -1,5 +1,7 @@
 == Neo4j Movies Example Application - The neo4j-python-driver (Bolt) Edition
 
+This is a Python/Flask implementation of the https://neo4j.com/developer/example-project[Movies example project^] using the Neo4j bolt driver.
+
 === Stack
 
 * https://github.com/neo4j/neo4j-python-driver[neo4j-python-driver] - Neo4j Bolt Driver for Python
@@ -14,15 +16,15 @@ First get yourself setup with link:http://docs.python-guide.org/en/latest/dev/vi
 
 [source]
 ----
-$ virtualenv neo4j-movies
-$ source neo4j-movies/bin/activate
+virtualenv neo4j-movies
+source neo4j-movies/bin/activate
 ----
 
-The next step is to install the dependencies for the app:
+The next step is to install the dependencies for the app with pip (or pip3 for python3):
 
 [source]
 ----
-(neo4j-movies)$ pip install -r requirements.txt
+pip install -r requirements.txt
 ----
 
 === Run locally
@@ -34,9 +36,15 @@ And finally let's start up a Flask web server:
 
 [source]
 ----
-(neo4j-movies)$ export NEO4J_PASSWORD="my-password"
-(neo4j-movies)$ python movies.py
- * Running on http://127.0.0.1:8080/
+# export NEO4J_URL="bolt://localhost"
+export NEO4J_PASSWORD="my-password"
+
+python movies.py
+# or python3 movies.py
+
+
+Running on http://127.0.0.1:8080/
 ----
 
 Navigate to http://localhost:8080 and you should see your first Neo4j application
+ 

@@ -36,9 +36,6 @@ And finally let's start up a Flask web server:
 
 [source]
 ----
-# export NEO4J_URL="bolt://localhost"
-export NEO4J_PASSWORD="my-password"
-
 python movies.py
 # or python3 movies.py
 
@@ -47,4 +44,26 @@ Running on http://127.0.0.1:8080/
 ----
 
 Navigate to http://localhost:8080 and you should see your first Neo4j application
- 
+
+=== Configuration options
+
+[%header,cols=2*]
+|===
+|Environment variable name
+|Default value (or N/A)
+
+|PORT
+|8080
+
+|NEO4J_URI
+|neo4j+s://demo.neo4jlabs.com
+
+|NEO4J_USER
+|movies
+
+|NEO4J_PASSWORD
+|movies
+
+|NEO4J_DATABASE
+|movies
+|===

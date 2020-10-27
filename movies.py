@@ -7,24 +7,31 @@ from neo4j import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
 
-url = os.getenv("NEO4J_URL","bolt://localhost")
-password = os.getenv("NEO4J_PASSWORD","test")
+url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
+username = os.getenv("NEO4J_USER", "movies")
+password = os.getenv("NEO4J_PASSWORD", "movies")
+database = os.getenv("NEO4J_DATABASE", "movies")
+port = os.getenv("PORT", 8080)
 
-driver = GraphDatabase.driver(url,auth=basic_auth("neo4j", password),encrypted=False)
+driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
+
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
-        g.neo4j_db = driver.session()
+        g.neo4j_db = driver.session(database=database)
     return g.neo4j_db
+
 
 @app.teardown_appcontext
 def close_db(error):
     if hasattr(g, 'neo4j_db'):
         g.neo4j_db.close()
 
+
 @app.route("/")
 def get_index():
     return app.send_static_file('index.html')
+
 
 def serialize_movie(movie):
     return {
@@ -37,6 +44,7 @@ def serialize_movie(movie):
         'tagline': movie['tagline']
     }
 
+
 def serialize_cast(cast):
     return {
         'name': cast[0],
@@ -44,12 +52,13 @@ def serialize_cast(cast):
         'role': cast[2]
     }
 
+
 @app.route("/graph")
 def get_graph():
     db = get_db()
     results = db.run("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-             "RETURN m.title as movie, collect(a.name) as cast "
-             "LIMIT $limit", {"limit": request.args.get("limit", 100)})
+                     "RETURN m.title as movie, collect(a.name) as cast "
+                     "LIMIT $limit", {"limit": request.args.get("limit", 100)})
     nodes = []
     rels = []
     i = 0
@@ -79,9 +88,9 @@ def get_search():
     else:
         db = get_db()
         results = db.run("MATCH (movie:Movie) "
-                 "WHERE movie.title =~ $title "
-                 "RETURN movie", {"title": "(?i).*" + q + ".*"}
-        )
+                         "WHERE movie.title =~ $title "
+                         "RETURN movie", {"title": "(?i).*" + q + ".*"}
+                         )
         return Response(dumps([serialize_movie(record['movie']) for record in results]),
                         mimetype="application/json")
 
@@ -90,13 +99,13 @@ def get_search():
 def get_movie(title):
     db = get_db()
     results = db.run("MATCH (movie:Movie {title:$title}) "
-             "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
-             "RETURN movie.title as title,"
-             "collect([person.name, "
-             "         head(split(toLower(type(r)), '_')), r.roles]) as cast "
-             "LIMIT 1", {"title": title})
+                     "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
+                     "RETURN movie.title as title,"
+                     "collect([person.name, "
+                     "         head(split(toLower(type(r)), '_')), r.roles]) as cast "
+                     "LIMIT 1", {"title": title})
 
-    result = results.single();
+    result = results.single()
     return Response(dumps({"title": result['title'],
                            "cast": [serialize_cast(member)
                                     for member in result['cast']]}),
@@ -104,4 +113,4 @@ def get_movie(title):
 
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(port=port)

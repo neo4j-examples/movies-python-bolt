@@ -1,0 +1,15 @@
+{
+  "name": "movies-neo4j-python-driver",
+  "version": "0.0.1",
+  "description": "Demo application using Neo4j Driver for Python",
+  "repository": "https://github.com/neo4j-examples/neo4j-movies-python-bolt",
+  "license": "Apache-2.0",
+  "private": true,
+  "devDependencies": {
+    "cypress": "^5.5.0"
+  },
+  "scripts": {
+    "preserver":"pip install -r requirements.txt",
+    "server": "python movies.py"
+  }
+}

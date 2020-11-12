@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://neo4j-documentation.github.io/developer-resources/language-guides/assets/css/main.css">
     <title>Neo4j Movies</title>
@@ -78,7 +79,7 @@
 </style>
 
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+<script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(function () {
         function showMovie(title) {
@@ -86,8 +87,8 @@
                     function (data) {
                         if (!data) return;
                         $("#title").text(data.title);
-                        $("#poster").attr("src","http://neo4j-documentation.github.io/developer-resources/language-guides/assets/posters/"+encodeURIComponent(data.title)+".jpg");
-                        var $list = $("#crew").empty();
+                        $("#poster").attr("src","https://neo4j-documentation.github.io/developer-resources/language-guides/assets/posters/"+encodeURIComponent(data.title)+".jpg");
+                        const $list = $("#crew").empty();
                         data.cast.forEach(function (cast) {
                             $list.append($("<li>" + cast.name + " " +cast.job + (cast.job == "acted"?" as " + cast.role : "") + "</li>"));
                         });
@@ -95,10 +96,10 @@
             return false;
         }
         function search() {
-            var query=$("#search").find("input[name=search]").val();
+            const query=$("#search").find("input[name=search]").val();
             $.get("/search?q=" + encodeURIComponent(query),
                     function (data) {
-                        var t = $("table#results tbody").empty();
+                        const t = $("table#results tbody").empty();
                         if (!data || data.length == 0) return;
                         data.forEach(function (movie) {
                             $("<tr><td class='movie'>" + movie.title + "</td><td>" + movie.released + "</td><td>" + movie.tagline + "</td></tr>").appendTo(t)
@@ -115,12 +116,12 @@
 </script>
 
 <script type="text/javascript">
-    var width = 800, height = 800;
+    const width = 800, height = 800;
 
-    var force = d3.layout.force()
+    const force = d3.layout.force()
             .charge(-200).linkDistance(30).size([width, height]);
 
-    var svg = d3.select("#graph").append("svg")
+    const svg = d3.select("#graph").append("svg")
             .attr("width", "100%").attr("height", "100%")
             .attr("pointer-events", "all");
 
@@ -129,11 +130,11 @@
 
         force.nodes(graph.nodes).links(graph.links).start();
 
-        var link = svg.selectAll(".link")
+        const link = svg.selectAll(".link")
                 .data(graph.links).enter()
                 .append("line").attr("class", "link");
 
-        var node = svg.selectAll(".node")
+        const node = svg.selectAll(".node")
                 .data(graph.nodes).enter()
                 .append("circle")
                 .attr("class", function (d) { return "node "+d.label })

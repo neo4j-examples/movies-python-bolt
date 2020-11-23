@@ -1,14 +1,24 @@
-== Neo4j Movies Example Application - The neo4j-python-driver (Bolt) Edition
+== Neo4j Movies Application: Quick Start
 
-This is a Python/Flask implementation of the https://neo4j.com/developer/example-project[Movies example project^] using the Neo4j bolt driver.
+image::https://github.com/neo4j-examples/movies-python-bolt/workflows/Python%20application/badge.svg[CI]
 
-=== Stack
+image::http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/movie_application.png[float=right,width=400]
 
-* https://github.com/neo4j/neo4j-python-driver[neo4j-python-driver] - Neo4j Bolt Driver for Python
-* http://flask.pocoo.org/[Flask] - Python microframework based on Werkzeug, Jinja 2 and good intentions.
-* Neo4j-Server
-* Frontend: jquery, bootstrap, http://d3js.org/[d3.js]
+This example application demonstrates how easy it is to get started with http://neo4j.com/developer[Neo4j] in Java.
 
+It is a very simple web application that uses our Movie graph dataset to provide a search with listing, a detail view and a graph visualization.
+
+=== The Stack
+
+These are the components of our Web Application:
+
+* Application Type:         Python-Web Application
+* Web framework:            https://palletsprojects.com/p/flask/[Flask] (Micro-Webframework)
+* Neo4j Database Connector: https://github.com/neo4j/neo4j-python-driver[Neo4j Python Driver] for Cypher https://neo4j.com/developer/python[Docs]
+* Database:                 Neo4j-Server (4.x) with multi-database
+* Frontend:                 jquery, bootstrap, https://d3js.org/[d3.js]
+
+Provision a database quickly with https://sandbox.neo4j.com/[Neo4j Sandbox] or https://neo4j.com/cloud/aura/[Neo4j Aura].
 
 === Setup
 

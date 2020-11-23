@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import os
 from json import dumps
-from flask import Flask, g, Response, request
 
+from flask import Flask, g, Response, request
 from neo4j import GraphDatabase, basic_auth
 
 app = Flask(__name__, static_url_path='/static/')
@@ -56,9 +56,11 @@ def serialize_cast(cast):
 @app.route("/graph")
 def get_graph():
     db = get_db()
-    results = db.run("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-                     "RETURN m.title as movie, collect(a.name) as cast "
-                     "LIMIT $limit", {"limit": request.args.get("limit", 100)})
+    results = db.read_transaction(lambda tx: list(tx.run("MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
+                                                         "RETURN m.title as movie, collect(a.name) as cast "
+                                                         "LIMIT $limit", {
+                                                             "limit": request.args.get("limit",
+                                                                                       100)})))
     nodes = []
     rels = []
     i = 0
@@ -87,10 +89,10 @@ def get_search():
         return []
     else:
         db = get_db()
-        results = db.run("MATCH (movie:Movie) "
-                         "WHERE movie.title =~ $title "
-                         "RETURN movie", {"title": "(?i).*" + q + ".*"}
-                         )
+        results = db.read_transaction(lambda tx: list(tx.run("MATCH (movie:Movie) "
+                                                             "WHERE movie.title =~ $title "
+                                                             "RETURN movie", {"title": "(?i).*" + q + ".*"}
+                                                             )))
         return Response(dumps([serialize_movie(record['movie']) for record in results]),
                         mimetype="application/json")
 
@@ -98,14 +100,13 @@ def get_search():
 @app.route("/movie/<title>")
 def get_movie(title):
     db = get_db()
-    results = db.run("MATCH (movie:Movie {title:$title}) "
-                     "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
-                     "RETURN movie.title as title,"
-                     "collect([person.name, "
-                     "         head(split(toLower(type(r)), '_')), r.roles]) as cast "
-                     "LIMIT 1", {"title": title})
+    result = db.read_transaction(lambda tx: tx.run("MATCH (movie:Movie {title:$title}) "
+                                                   "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
+                                                   "RETURN movie.title as title,"
+                                                   "COLLECT([person.name, "
+                                                   "HEAD(SPLIT(TOLOWER(TYPE(r)), '_')), r.roles]) AS cast "
+                                                   "LIMIT 1", {"title": title}).single())
 
-    result = results.single()
     return Response(dumps({"title": result['title'],
                            "cast": [serialize_cast(member)
                                     for member in result['cast']]}),

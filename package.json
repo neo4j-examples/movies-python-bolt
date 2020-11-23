@@ -9,7 +9,7 @@
     "cypress": "^6.1.0"
   },
   "scripts": {
-    "preserver":"pip install -r requirements.txt",
+    "preserver": "pip install -r requirements.txt",
     "server": "python movies.py"
   }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 from json import dumps
+import logging
 
 from flask import Flask, g, Response, request
 from neo4j import GraphDatabase, basic_auth
@@ -114,4 +115,5 @@ def get_movie(title):
 
 
 if __name__ == '__main__':
+    logging.info('Running on port %d, database is at %s', port, url)
     app.run(port=port)

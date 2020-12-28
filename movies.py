@@ -11,7 +11,9 @@ app = Flask(__name__, static_url_path='/static/')
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
 password = os.getenv("NEO4J_PASSWORD", "movies")
+neo4jVersion = os.getenv("NEO4J_VERSION", "")
 database = os.getenv("NEO4J_DATABASE", "movies")
+
 port = os.getenv("PORT", 8080)
 
 driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
@@ -19,7 +21,10 @@ driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
 
 def get_db():
     if not hasattr(g, 'neo4j_db'):
-        g.neo4j_db = driver.session(database=database)
+        if neo4jVersion.startswith("4"):
+            g.neo4j_db = driver.session(database=database)
+        else:
+            g.neo4j_db = driver.session()
     return g.neo4j_db
 
 

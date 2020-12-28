@@ -61,7 +61,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
       - name: Download dataset
-        run: curl --output /tmp/movies.cypher https://raw.githubusercontent.com/neo4j-graph-examples/movies/master/scripts/import.cypher
+        run: curl --fail --output /tmp/movies.cypher https://raw.githubusercontent.com/neo4j-graph-examples/movies/8508a527d8aa1c261b0978d1d5b3156d4ac8328e/scripts/import.cypher
       - name: Import dataset (Neo4j 3.5)
         if: ${{ startsWith(matrix.neo4j-version, '3.5') }}
         run: docker exec --interactive neo4j-e2e sh -c 'cat /movies/movies.cypher | cypher-shell -u neo4j -p abcde'
@@ -71,10 +71,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: cypress-io/github-action@v2
         env:
-          CYPRESS_NEO4J_URI: bolt://localhost
-          CYPRESS_NEO4J_DATABASE: "neo4j"
-          CYPRESS_NEO4J_USER: neo4j
-          CYPRESS_NEO4J_PASSWORD: abcde
+          NEO4J_VERSION: ${{ matrix.neo4j-version }}
+          NEO4J_URI: bolt://localhost
+          NEO4J_DATABASE: "neo4j"
+          NEO4J_USER: neo4j
+          NEO4J_PASSWORD: abcde
         with:
           start: npm run server
           browser: chrome

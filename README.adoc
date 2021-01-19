@@ -4,7 +4,7 @@ image::https://github.com/neo4j-examples/movies-python-bolt/workflows/Python%20a
 
 image::http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/movie_application.png[float=right,width=400]
 
-This example application demonstrates how easy it is to get started with http://neo4j.com/developer[Neo4j] in Java.
+This example application demonstrates how easy it is to get started with http://neo4j.com/developer[Neo4j] in Python.
 
 It is a very simple web application that uses our Movie graph dataset to provide a search with listing, a detail view and a graph visualization.
 

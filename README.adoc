@@ -18,7 +18,7 @@ These are the components of our Web Application:
 * Database:                 Neo4j-Server (4.x) with multi-database
 * Frontend:                 jquery, bootstrap, https://d3js.org/[d3.js]
 
-Provision a database quickly with https://sandbox.neo4j.com/[Neo4j Sandbox] or https://neo4j.com/cloud/aura/[Neo4j Aura].
+Provision a database quickly with https://sandbox.neo4j.com/?usecase=movies[Neo4j Sandbox] or https://neo4j.com/cloud/aura/[Neo4j Aura].
 
 === Setup
 

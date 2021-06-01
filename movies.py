@@ -47,7 +47,8 @@ def serialize_movie(movie):
         'released': movie['released'],
         'duration': movie['duration'],
         'rated': movie['rated'],
-        'tagline': movie['tagline']
+        'tagline': movie['tagline'],
+        'votes': movie.get('votes', 0)
     }
 
 
@@ -117,6 +118,19 @@ def get_movie(title):
                            "cast": [serialize_cast(member)
                                     for member in result['cast']]}),
                     mimetype="application/json")
+
+
+@app.route("/movie/<title>/vote", methods=["POST"])
+def vote_in_movie(title):
+    db = get_db()
+    summary = db.write_transaction(lambda tx: tx.run("MATCH (m:Movie {title: $title}) "
+                                                    "WITH m, (CASE WHEN exists(m.votes) THEN m.votes ELSE 0 END) AS currentVotes "
+                                                    "SET m.votes = currentVotes + 1;", {"title": title}).consume())
+    updates = summary.counters.properties_set
+
+    db.close()
+
+    return Response(dumps({"updates": updates}), mimetype="application/json")
 
 
 if __name__ == '__main__':

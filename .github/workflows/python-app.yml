@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [ 16.x ]
         neo4j-version: [ "3.5", "3.5-enterprise", "4.4", "4.4-enterprise" ]
     services:
       neo4j:

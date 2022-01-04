@@ -12,6 +12,8 @@ from neo4j import (
 from starlette.responses import FileResponse
 
 
+PATH = os.path.dirname(os.path.abspath(__file__))
+
 app = FastAPI()
 
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
@@ -37,7 +39,7 @@ async def get_db():
 
 @app.get("/")
 async def get_index():
-    return FileResponse("static/index.html")
+    return FileResponse(os.path.join(PATH, "static", "index.html"))
 
 
 def serialize_movie(movie):

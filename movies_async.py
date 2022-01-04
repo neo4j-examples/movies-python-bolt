@@ -44,22 +44,22 @@ async def get_index():
 
 def serialize_movie(movie):
     return {
-        'id': movie['id'],
-        'title': movie['title'],
-        'summary': movie['summary'],
-        'released': movie['released'],
-        'duration': movie['duration'],
-        'rated': movie['rated'],
-        'tagline': movie['tagline'],
-        'votes': movie.get('votes', 0)
+        "id": movie["id"],
+        "title": movie["title"],
+        "summary": movie["summary"],
+        "released": movie["released"],
+        "duration": movie["duration"],
+        "rated": movie["rated"],
+        "tagline": movie["tagline"],
+        "votes": movie.get("votes", 0)
     }
 
 
 def serialize_cast(cast):
     return {
-        'name': cast[0],
-        'job': cast[1],
-        'role': cast[2]
+        "name": cast[0],
+        "job": cast[1],
+        "role": cast[2]
     }
 
 
@@ -83,7 +83,7 @@ async def get_graph(limit: int = 100):
             nodes.append({"title": record["movie"], "label": "movie"})
             target = i
             i += 1
-            for name in record['cast']:
+            for name in record["cast"]:
                 actor = {"title": name, "label": "actor"}
                 try:
                     source = nodes.index(actor)
@@ -109,7 +109,7 @@ async def get_search(q: Optional[str] = None):
         return []
     async with get_db() as db:
         results = await db.read_transaction(work, q)
-        return [serialize_movie(record['movie']) for record in results]
+        return [serialize_movie(record["movie"]) for record in results]
 
 
 @app.get("/movie/{title}")
@@ -129,9 +129,9 @@ async def get_movie(title: str):
     async with get_db() as db:
         result = await db.read_transaction(work)
 
-        return {"title": result['title'],
+        return {"title": result["title"],
                 "cast": [serialize_cast(member)
-                         for member in result['cast']]}
+                         for member in result["cast"]]}
 
 
 @app.post("/movie/{title}/vote")
@@ -152,8 +152,10 @@ async def vote_in_movie(title: str):
         return {"updates": updates}
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
 
-    logging.info('Running on port %d, database is at %s', port, url)
+    logging.root.setLevel(logging.INFO)
+    logging.info("Staring on port %d, database is at %s", port, url)
+
     uvicorn.run(app, port=port)

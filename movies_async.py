@@ -156,6 +156,6 @@ if __name__ == "__main__":
     import uvicorn
 
     logging.root.setLevel(logging.INFO)
-    logging.info("Staring on port %d, database is at %s", port, url)
+    logging.info("Starting on port %d, database is at %s", port, url)
 
     uvicorn.run(app, port=port)

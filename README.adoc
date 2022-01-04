@@ -1,6 +1,7 @@
 == Neo4j Movies Application: Quick Start
 
-image::https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml"]
+image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml"]
+image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml"]
 
 image::http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/movie_application.png[float=right,width=400]
 
@@ -8,12 +9,16 @@ This example application demonstrates how easy it is to get started with http://
 
 It is a very simple web application that uses our Movie graph dataset to provide a search with listing, a detail view and a graph visualization.
 
+We offer two different ways to run the application: synchronous and asynchronous (using `asyncio`).
+
 === The Stack
 
 These are the components of our Web Application:
 
 * Application Type:         Python-Web Application
-* Web framework:            https://palletsprojects.com/p/flask/[Flask] (Micro-Webframework)
+* Web framework:
+  - sync: https://palletsprojects.com/p/flask/[Flask] (Micro-Webframework)
+  - async: https://fastapi.tiangolo.com/[FastAPI] (Micro-Webframework)
 * Neo4j Database Connector: https://github.com/neo4j/neo4j-python-driver[Neo4j Python Driver] for Cypher https://neo4j.com/developer/python[Docs]
 * Database:                 Neo4j-Server (4.x) with multi-database
 * Frontend:                 jquery, bootstrap, https://d3js.org/[d3.js]
@@ -22,7 +27,9 @@ Provision a database quickly with https://sandbox.neo4j.com/?usecase=movies[Neo4
 
 === Setup
 
-First get yourself setup with link:http://docs.python-guide.org/en/latest/dev/virtualenvs/[virtualenv] so we don't break any other Python stuff you have on your machine. After you've got that installed let's setup an environment for our app:
+Install Python 3.6-3.9 (sync) or 3.7-3.10 (async).
+
+Then get yourself set up with link:http://docs.python-guide.org/en/latest/dev/virtualenvs/[virtualenv] so we don't break any other Python stuff you have on your machine. After you've got that installed let's set up an environment for our app:
 
 [source]
 ----
@@ -32,9 +39,18 @@ source neo4j-movies/bin/activate
 
 The next step is to install the dependencies for the app with pip (or pip3 for python3):
 
+sync:
+
 [source]
 ----
 pip install -r requirements.txt
+----
+
+async:
+
+[source]
+----
+pip install -r requirements-async.txt
 ----
 
 === Run locally
@@ -42,13 +58,25 @@ pip install -r requirements.txt
 Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser].
 Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
 
-And finally let's start up a Flask web server:
+And finally let's start up a web server:
+
+sync:
 
 [source]
 ----
 python movies.py
 # or python3 movies.py
 
+
+Running on http://127.0.0.1:8080/
+----
+
+async:
+
+[source]
+----
+python movies-async.py
+# or python3 movies-async.py
 
 Running on http://127.0.0.1:8080/
 ----

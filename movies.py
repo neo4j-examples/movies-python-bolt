@@ -15,7 +15,7 @@ from neo4j import (
 )
 
 
-app = Flask(__name__, static_url_path='/static/')
+app = Flask(__name__, static_url_path="/static/")
 
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
@@ -23,15 +23,13 @@ password = os.getenv("NEO4J_PASSWORD", "movies")
 neo4j_version = os.getenv("NEO4J_VERSION", "4")
 database = os.getenv("NEO4J_DATABASE", "movies")
 
-print(url)
-
 port = os.getenv("PORT", 8080)
 
 driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
 
 
 def get_db():
-    if not hasattr(g, 'neo4j_db'):
+    if not hasattr(g, "neo4j_db"):
         if neo4j_version.startswith("4"):
             g.neo4j_db = driver.session(database=database)
         else:
@@ -41,33 +39,33 @@ def get_db():
 
 @app.teardown_appcontext
 def close_db(error):
-    if hasattr(g, 'neo4j_db'):
+    if hasattr(g, "neo4j_db"):
         g.neo4j_db.close()
 
 
 @app.route("/")
 def get_index():
-    return app.send_static_file('index.html')
+    return app.send_static_file("index.html")
 
 
 def serialize_movie(movie):
     return {
-        'id': movie['id'],
-        'title': movie['title'],
-        'summary': movie['summary'],
-        'released': movie['released'],
-        'duration': movie['duration'],
-        'rated': movie['rated'],
-        'tagline': movie['tagline'],
-        'votes': movie.get('votes', 0)
+        "id": movie["id"],
+        "title": movie["title"],
+        "summary": movie["summary"],
+        "released": movie["released"],
+        "duration": movie["duration"],
+        "rated": movie["rated"],
+        "tagline": movie["tagline"],
+        "votes": movie.get("votes", 0)
     }
 
 
 def serialize_cast(cast):
     return {
-        'name': cast[0],
-        'job': cast[1],
-        'role': cast[2]
+        "name": cast[0],
+        "job": cast[1],
+        "role": cast[2]
     }
 
 
@@ -90,7 +88,7 @@ def get_graph():
         nodes.append({"title": record["movie"], "label": "movie"})
         target = i
         i += 1
-        for name in record['cast']:
+        for name in record["cast"]:
             actor = {"title": name, "label": "actor"}
             try:
                 source = nodes.index(actor)
@@ -121,7 +119,7 @@ def get_search():
         db = get_db()
         results = db.read_transaction(work, q)
         return Response(
-            dumps([serialize_movie(record['movie']) for record in results]),
+            dumps([serialize_movie(record["movie"]) for record in results]),
             mimetype="application/json"
         )
 
@@ -142,9 +140,9 @@ def get_movie(title):
     db = get_db()
     result = db.read_transaction(work, title)
 
-    return Response(dumps({"title": result['title'],
+    return Response(dumps({"title": result["title"],
                            "cast": [serialize_cast(member)
-                                    for member in result['cast']]}),
+                                    for member in result["cast"]]}),
                     mimetype="application/json")
 
 
@@ -168,6 +166,7 @@ def vote_in_movie(title):
     return Response(dumps({"updates": updates}), mimetype="application/json")
 
 
-if __name__ == '__main__':
-    logging.info('Running on port %d, database is at %s', port, url)
+if __name__ == "__main__":
+    logging.root.setLevel(logging.INFO)
+    logging.info("Starting on port %d, database is at %s", port, url)
     app.run(port=port)

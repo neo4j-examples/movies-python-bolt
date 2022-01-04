@@ -1,6 +1,6 @@
 == Neo4j Movies Application: Quick Start
 
-image::https://github.com/neo4j-examples/movies-python-bolt/workflows/Python%20application/badge.svg[CI]
+image::https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml"]
 
 image::http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/movie_application.png[float=right,width=400]
 
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 === Run locally
 
-Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser]. 
+Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser].
 Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
 
 And finally let's start up a Flask web server:

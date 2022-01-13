@@ -106,9 +106,9 @@ def get_search():
     def work(tx, q_):
         return list(tx.run(
             "MATCH (movie:Movie) "
-            "WHERE movie.title =~ $title "
+            "WHERE TOLOWER(movie.title) CONTAINS TOLOWER($title) "
             "RETURN movie",
-            {"title": "(?i).*" + q_ + ".*"}
+            {"title": q_}
         ))
 
     try:

@@ -74,7 +74,7 @@ def get_graph():
     def work(tx, limit):
         return list(tx.run(
             "MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-            "RETURN m.title as movie, collect(a.name) as cast "
+            "RETURN m.title AS movie, COLLECT(a.name) AS cast "
             "LIMIT $limit",
             {"limit": limit}
         ))

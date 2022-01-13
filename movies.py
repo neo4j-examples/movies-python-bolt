@@ -151,9 +151,7 @@ def vote_in_movie(title):
     def work(tx, title_):
         return tx.run(
             "MATCH (m:Movie {title: $title}) "
-            "WITH m, (CASE WHEN exists(m.votes) THEN m.votes ELSE 0 END)"
-            " AS currentVotes "
-            "SET m.votes = currentVotes + 1;",
+            "SET m.votes = COALESCE(m.votes, 0) + 1;",
             {"title": title_}
         ).consume()
 

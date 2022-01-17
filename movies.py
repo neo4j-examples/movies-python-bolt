@@ -106,7 +106,7 @@ def get_search():
     def work(tx, q_):
         return list(tx.run(
             "MATCH (movie:Movie) "
-            "WHERE TOLOWER(movie.title) CONTAINS TOLOWER($title) "
+            "WHERE toLower(movie.title) CONTAINS toLower($title) "
             "RETURN movie",
             {"title": q_}
         ))

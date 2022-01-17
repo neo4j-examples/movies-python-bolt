@@ -100,7 +100,7 @@ async def get_search(q: Optional[str] = None):
     async def work(tx, q_):
         result = await tx.run(
             "MATCH (movie:Movie) "
-            "WHERE TOLOWER(movie.title) CONTAINS TOLOWER($title) "
+            "WHERE toLower(movie.title) CONTAINS toLower($title) "
             "RETURN movie", {"title": q_}
         )
         return [record async for record in result]

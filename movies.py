@@ -74,7 +74,7 @@ def get_graph():
     def work(tx, limit):
         return list(tx.run(
             "MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-            "RETURN m.title as movie, collect(a.name) as cast "
+            "RETURN m.title AS movie, collect(a.name) AS cast "
             "LIMIT $limit",
             {"limit": limit}
         ))
@@ -106,9 +106,9 @@ def get_search():
     def work(tx, q_):
         return list(tx.run(
             "MATCH (movie:Movie) "
-            "WHERE movie.title =~ $title "
+            "WHERE toLower(movie.title) CONTAINS toLower($title) "
             "RETURN movie",
-            {"title": "(?i).*" + q_ + ".*"}
+            {"title": q_}
         ))
 
     try:
@@ -151,9 +151,7 @@ def vote_in_movie(title):
     def work(tx, title_):
         return tx.run(
             "MATCH (m:Movie {title: $title}) "
-            "WITH m, (CASE WHEN exists(m.votes) THEN m.votes ELSE 0 END)"
-            " AS currentVotes "
-            "SET m.votes = currentVotes + 1;",
+            "SET m.votes = coalesce(m.votes, 0) + 1;",
             {"title": title_}
         ).consume()
 

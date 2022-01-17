@@ -68,7 +68,7 @@ async def get_graph(limit: int = 100):
     async def work(tx):
         result = await tx.run(
             "MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-            "RETURN m.title as movie, collect(a.name) as cast "
+            "RETURN m.title AS movie, collect(a.name) AS cast "
             "LIMIT $limit",
             {"limit": limit}
         )
@@ -100,8 +100,8 @@ async def get_search(q: Optional[str] = None):
     async def work(tx, q_):
         result = await tx.run(
             "MATCH (movie:Movie) "
-            "WHERE movie.title =~ $title "
-            "RETURN movie", {"title": "(?i).*" + q_ + ".*"}
+            "WHERE toLower(movie.title) CONTAINS toLower($title) "
+            "RETURN movie", {"title": q_}
         )
         return [record async for record in result]
 
@@ -139,9 +139,7 @@ async def vote_in_movie(title: str):
     async def work(tx):
         result = await tx.run(
             "MATCH (m:Movie {title: $title}) "
-            "WITH m, (CASE WHEN exists(m.votes) THEN m.votes ELSE 0 END)"
-            " AS currentVotes "
-            "SET m.votes = currentVotes + 1;",
+            "SET m.votes = coalesce(m.votes, 0) + 1;",
             {"title": title})
         return await result.consume()
 

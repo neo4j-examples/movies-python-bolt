@@ -86,8 +86,8 @@ Neo4j for this purpose. If you want to connect to a local database, follow these
 instructions.
 
 Start your local Neo4j Server (http://neo4j.com/download[Download & Install]),
-open the http://localhost:7474[Neo4j Browser]. Then install the Movies data-set
-with `:play movies`, click the `CREATE` statement (in some Neo4j this will not
+open the http://localhost:7474[Neo4j Browser]. Then install the Movies data set
+with `:play movies`, click the `CREATE` statement (in some versions, this will not
 be directly on the first page of the movies example), and hit the triangular
 "Run" button.
 

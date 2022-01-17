@@ -139,7 +139,7 @@ async def vote_in_movie(title: str):
     async def work(tx):
         result = await tx.run(
             "MATCH (m:Movie {title: $title}) "
-            "SET m.votes = COALESCE(m.votes, 0) + 1;",
+            "SET m.votes = coalesce(m.votes, 0) + 1;",
             {"title": title})
         return await result.consume()
 

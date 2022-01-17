@@ -55,9 +55,6 @@ pip install -r requirements-async.txt
 
 === Run locally
 
-Start your local Neo4j Server (http://neo4j.com/download[Download & Install]), open the http://localhost:7474[Neo4j Browser].
-Then install the Movies data-set with `:play movies`, click the statement, and hit the triangular "Run" button.
-
 And finally let's start up a web server:
 
 sync:
@@ -66,7 +63,6 @@ sync:
 ----
 python movies.py
 # or python3 movies.py
-
 
 Running on http://127.0.0.1:8080/
 ----
@@ -83,12 +79,52 @@ Running on http://127.0.0.1:8080/
 
 Navigate to http://localhost:8080 and you should see your first Neo4j application
 
-=== Configuration options
+
+=== Changing the Database
+By default, this example application connects to a remote Neo4j database run by
+Neo4j for this purpose. If you want to connect to a local database, follow these
+instructions.
+
+Start your local Neo4j Server (http://neo4j.com/download[Download & Install]),
+open the http://localhost:7474[Neo4j Browser]. Then install the Movies data set
+with `:play movies`, click the `CREATE` statement (in some versions, this will not
+be directly on the first page of the movies example), and hit the triangular
+"Run" button.
+
+If you haven't touched the configuration of your Neo4j Server, the database will
+be reachable at `neo4j://localhost:7687`.
+
+Use environment variables to let the application know where to connect to the
+database.
+
+sync:
+
+[source]
+----
+NEO4J_URI=neo4j://localhost:7687 NEO4J_DATABASE=neo4j NEO4J_USER="<username>" NEO4J_PASSWORD="<password>" python movies.py
+
+Running on http://127.0.0.1:8080/
+----
+
+async:
+
+[source]
+----
+NEO4J_URI=neo4j://localhost:7687 NEO4J_DATABASE=neo4j NEO4J_USER="<username>" NEO4J_PASSWORD="<password>" python movies-async.py
+
+Running on http://127.0.0.1:8080/
+----
+
+
+=== All Configuration Options
+
+Here are all environment variables that can be used to configure the
+application.
 
 [%header,cols=2*]
 |===
-|Environment variable name
-|Default value (or N/A)
+|Environment Variable Name
+|Default Value (or N/A)
 
 |PORT
 |8080

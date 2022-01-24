@@ -81,6 +81,7 @@ jobs:
         with:
           repository: neo4j-examples/movies-harness
           path: e2e
+          ref: ${{ github.event.client_payload.sha }}
       - uses: cypress-io/github-action@v2
         env:
           NEO4J_VERSION: ${{ matrix.neo4j-version }}

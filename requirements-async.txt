@@ -1,4 +1,4 @@
-fastapi==0.75.0
+fastapi==0.75.2
 neo4j==5.0.0a1
 starlette==0.17.1
 uvicorn==0.17.6

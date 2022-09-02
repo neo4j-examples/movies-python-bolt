@@ -29,7 +29,7 @@ driver = AsyncGraphDatabase.driver(url, auth=basic_auth(username, password))
 
 @asynccontextmanager
 async def get_db():
-    if neo4j_version.startswith("4"):
+    if neo4j_version >= "4":
         async with driver.session(database=database) as session_:
             yield session_
     else:
@@ -75,7 +75,7 @@ async def get_graph(limit: int = 100):
         return [record_ async for record_ in result]
 
     async with get_db() as db:
-        results = await db.read_transaction(work)
+        results = await db.execute_read(work)
         nodes = []
         rels = []
         i = 0
@@ -108,7 +108,7 @@ async def get_search(q: Optional[str] = None):
     if q is None:
         return []
     async with get_db() as db:
-        results = await db.read_transaction(work, q)
+        results = await db.execute_read(work, q)
         return [serialize_movie(record["movie"]) for record in results]
 
 
@@ -127,7 +127,7 @@ async def get_movie(title: str):
         return await result_.single()
 
     async with get_db() as db:
-        result = await db.read_transaction(work)
+        result = await db.execute_read(work)
 
         return {"title": result["title"],
                 "cast": [serialize_cast(member)
@@ -144,7 +144,7 @@ async def vote_in_movie(title: str):
         return await result.consume()
 
     async with get_db() as db:
-        summary = await db.write_transaction(work)
+        summary = await db.execute_write(work)
         updates = summary.counters.properties_set
 
         return {"updates": updates}

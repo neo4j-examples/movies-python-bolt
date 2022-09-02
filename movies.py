@@ -30,7 +30,7 @@ driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
 
 def get_db():
     if not hasattr(g, "neo4j_db"):
-        if neo4j_version.startswith("4"):
+        if neo4j_version >= "4":
             g.neo4j_db = driver.session(database=database)
         else:
             g.neo4j_db = driver.session()

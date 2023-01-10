@@ -5,5 +5,5 @@ fastapi==0.89.0
 # be installed.
 starlette
 
-neo4j==5.0.0a2
+neo4j==5.4.0
 uvicorn==0.20.0

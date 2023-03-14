@@ -1,4 +1,4 @@
-fastapi==0.94.0
+fastapi==0.94.1
 # starlette is a dependency of fastapi, but we also use it directly for some
 # lower-level things. Hence, we want to list it explicitly but leave its
 # version unspecified so that what ever version matches the one of fastapi will

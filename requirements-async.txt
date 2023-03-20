@@ -6,4 +6,4 @@ fastapi==0.94.1
 starlette
 
 neo4j==5.0.0a2
-uvicorn==0.21.0
+uvicorn==0.21.1

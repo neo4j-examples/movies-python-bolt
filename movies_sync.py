@@ -20,7 +20,6 @@ app = Flask(__name__, static_url_path="/static/")
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
 password = os.getenv("NEO4J_PASSWORD", "movies")
-neo4j_version = os.getenv("NEO4J_VERSION", "4")
 database = os.getenv("NEO4J_DATABASE", "movies")
 
 port = os.getenv("PORT", 8080)
@@ -30,10 +29,7 @@ driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
 
 def get_db():
     if not hasattr(g, "neo4j_db"):
-        if neo4j_version >= "4":
-            g.neo4j_db = driver.session(database=database)
-        else:
-            g.neo4j_db = driver.session()
+        g.neo4j_db = driver.session(database=database)
     return g.neo4j_db
 
 
@@ -80,7 +76,7 @@ def get_graph():
         ))
 
     db = get_db()
-    results = db.read_transaction(work, request.args.get("limit", 100))
+    results = db.execute_read(work, request.args.get("limit", 100))
     nodes = []
     rels = []
     i = 0
@@ -117,7 +113,7 @@ def get_search():
         return []
     else:
         db = get_db()
-        results = db.read_transaction(work, q)
+        results = db.execute_read(work, q)
         return Response(
             dumps([serialize_movie(record["movie"]) for record in results]),
             mimetype="application/json"
@@ -138,7 +134,7 @@ def get_movie(title):
         ).single()
 
     db = get_db()
-    result = db.read_transaction(work, title)
+    result = db.execute_read(work, title)
 
     return Response(dumps({"title": result["title"],
                            "cast": [serialize_cast(member)
@@ -156,7 +152,7 @@ def vote_in_movie(title):
         ).consume()
 
     db = get_db()
-    summary = db.write_transaction(work, title)
+    summary = db.execute_write(work, title)
     updates = summary.counters.properties_set
 
     db.close()

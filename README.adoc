@@ -20,14 +20,14 @@ These are the components of our Web Application:
   - sync: https://palletsprojects.com/p/flask/[Flask] (Micro-Webframework)
   - async: https://fastapi.tiangolo.com/[FastAPI] (Micro-Webframework)
 * Neo4j Database Connector: https://github.com/neo4j/neo4j-python-driver[Neo4j Python Driver] for Cypher https://neo4j.com/developer/python[Docs]
-* Database:                 Neo4j-Server (4.x) with multi-database
+* Database:                 Neo4j-Server (4.4 or newer) with multi-database
 * Frontend:                 jquery, bootstrap, https://d3js.org/[d3.js]
 
 Provision a database quickly with https://sandbox.neo4j.com/?usecase=movies[Neo4j Sandbox] or https://neo4j.com/cloud/aura/[Neo4j Aura].
 
 === Setup
 
-Install Python 3.6-3.9 (sync) or 3.7-3.10 (async).
+Install Python 3.7-3.11.
 
 Then get yourself set up with link:http://docs.python-guide.org/en/latest/dev/virtualenvs/[virtualenv] so we don't break any other Python stuff you have on your machine. After you've got that installed let's set up an environment for our app:
 
@@ -43,7 +43,7 @@ sync:
 
 [source]
 ----
-pip install -r requirements.txt
+pip install -r requirements-sync.txt
 ----
 
 async:
@@ -61,8 +61,8 @@ sync:
 
 [source]
 ----
-python movies.py
-# or python3 movies.py
+python movies_sync.py
+# or python3 movies_sync.py
 
 Running on http://127.0.0.1:8080/
 ----
@@ -71,8 +71,8 @@ async:
 
 [source]
 ----
-python movies-async.py
-# or python3 movies-async.py
+python movies_async.py
+# or python3 movies_async.py
 
 Running on http://127.0.0.1:8080/
 ----
@@ -101,7 +101,7 @@ sync:
 
 [source]
 ----
-NEO4J_URI=neo4j://localhost:7687 NEO4J_DATABASE=neo4j NEO4J_USER="<username>" NEO4J_PASSWORD="<password>" python movies.py
+NEO4J_URI=neo4j://localhost:7687 NEO4J_DATABASE=neo4j NEO4J_USER="<username>" NEO4J_PASSWORD="<password>" python movies-sync.py
 
 Running on http://127.0.0.1:8080/
 ----

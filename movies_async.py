@@ -111,10 +111,10 @@ async def get_search(q: Optional[str] = None):
         return []
     records, _, _ = await get_driver().execute_query(
         query("""
-                MATCH (movie:Movie)
-                WHERE toLower(movie.title) CONTAINS toLower($title)
-                RETURN movie
-            """),
+            MATCH (movie:Movie)
+            WHERE toLower(movie.title) CONTAINS toLower($title)
+            RETURN movie
+        """),
         title=q,
         database_=database,
         routing_="r",

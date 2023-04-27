@@ -37,12 +37,6 @@ def get_db():
     return g.neo4j_db
 
 
-def get_db():
-    if not hasattr(g, "neo4j_db"):
-        g.neo4j_db = driver.session(database=database)
-    return g.neo4j_db
-
-
 @app.teardown_appcontext
 def close_db(error):
     if hasattr(g, "neo4j_db"):

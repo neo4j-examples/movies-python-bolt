@@ -33,7 +33,7 @@ def get_db():
         session_config = {}
         if neo4j_version >= "4":
             session_config["database"] = database
-        g.neo4j_db = driver.session(database=database)
+        g.neo4j_db = driver.session(**session_config)
     return g.neo4j_db
 
 

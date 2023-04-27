@@ -5,16 +5,12 @@ import os
 from typing import Optional
 
 from fastapi import FastAPI
-from neo4j import (
-    basic_auth,
-    AsyncGraphDatabase,
-)
+from neo4j import AsyncGraphDatabase
 from starlette.responses import FileResponse
 
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-app = FastAPI()
 
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
@@ -24,11 +20,23 @@ database = os.getenv("NEO4J_DATABASE", "movies")
 
 port = os.getenv("PORT", 8080)
 
-driver = AsyncGraphDatabase.driver(url, auth=basic_auth(username, password))
+shared_context = {}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    driver = AsyncGraphDatabase.driver(url, auth=(username, password))
+    shared_context["driver"] = driver
+    yield
+    await driver.close()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @asynccontextmanager
 async def get_db():
+    driver = shared_context["driver"]
     session_config = {}
     if neo4j_version >= "4":
         session_config["database"] = database

@@ -167,4 +167,7 @@ def vote_in_movie(title):
 if __name__ == "__main__":
     logging.root.setLevel(logging.INFO)
     logging.info("Starting on port %d, database is at %s", port, url)
-    app.run(port=port)
+    try:
+        app.run(port=port)
+    finally:
+        driver.close()

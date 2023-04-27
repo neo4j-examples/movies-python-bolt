@@ -7,9 +7,10 @@ from typing import Optional, cast
 
 import neo4j
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from neo4j import AsyncGraphDatabase
-from starlette.responses import FileResponse
 from typing_extensions import LiteralString
+
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 

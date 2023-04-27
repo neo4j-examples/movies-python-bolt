@@ -3,10 +3,7 @@ from json import dumps
 import logging
 import os
 from textwrap import dedent
-from typing import (
-    cast,
-    Optional,
-)
+from typing import cast
 
 import neo4j
 from flask import (
@@ -27,15 +24,11 @@ url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
 password = os.getenv("NEO4J_PASSWORD", "movies")
 neo4j_version = os.getenv("NEO4J_VERSION", "4")
-database: Optional[str] = os.getenv("NEO4J_DATABASE", "movies")
+database = os.getenv("NEO4J_DATABASE", "movies")
 
 port = int(os.getenv("PORT", 8080))
 
 driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
-
-if neo4j_version < "4":
-    # No multi-database support in Neo4j 3.5
-    database = None
 
 
 def query(q: LiteralString) -> LiteralString:

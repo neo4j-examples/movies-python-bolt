@@ -31,10 +31,6 @@ port = int(os.getenv("PORT", 8080))
 
 shared_context = {}
 
-if neo4j_version < "4":
-    # No multi-database support in Neo4j 3.5
-    database = None
-
 
 def query(q: LiteralString) -> LiteralString:
     # this is a safe transform:

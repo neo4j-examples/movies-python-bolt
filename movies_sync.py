@@ -1,22 +1,14 @@
 #!/usr/bin/env python
-from json import dumps
 import logging
 import os
+from json import dumps
 from textwrap import dedent
 from typing import cast
 
 import neo4j
-from flask import (
-    Flask,
-    request,
-    Response,
-)
-from neo4j import (
-    GraphDatabase,
-    basic_auth,
-)
+from flask import Flask, Response, request
+from neo4j import GraphDatabase, basic_auth
 from typing_extensions import LiteralString
-
 
 app = Flask(__name__, static_url_path="/static/")
 

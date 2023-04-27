@@ -22,11 +22,14 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ruff
+        pip install ruff pyright
         pip install -r requirements-sync.txt
     - name: Lint with ruff
       run: |
         ruff check . --show-source
+    - name: Check with pyright
+      run: |
+        pyright .
 
 
   e2e:

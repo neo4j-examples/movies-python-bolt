@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-from contextlib import asynccontextmanager
 import logging
 import os
-from typing import Optional
+from contextlib import asynccontextmanager
+from textwrap import dedent
+from typing import Optional, cast
 
-from fastapi import FastAPI
-from neo4j import (
-    basic_auth,
-    AsyncGraphDatabase,
-)
-from starlette.responses import FileResponse
+import neo4j
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from neo4j import AsyncGraphDatabase
+from typing_extensions import LiteralString
 
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-app = FastAPI()
 
 url = os.getenv("NEO4J_URI", "neo4j+s://demo.neo4jlabs.com")
 username = os.getenv("NEO4J_USER", "movies")
@@ -22,19 +21,31 @@ password = os.getenv("NEO4J_PASSWORD", "movies")
 neo4j_version = os.getenv("NEO4J_VERSION", "4")
 database = os.getenv("NEO4J_DATABASE", "movies")
 
-port = os.getenv("PORT", 8080)
+port = int(os.getenv("PORT", 8080))
 
-driver = AsyncGraphDatabase.driver(url, auth=basic_auth(username, password))
+shared_context = {}
+
+
+def query(q: LiteralString) -> LiteralString:
+    # this is a safe transform:
+    # no way for cypher injection by trimming whitespace
+    # hence, we can safely cast to LiteralString
+    return cast(LiteralString, dedent(q).strip())
 
 
 @asynccontextmanager
-async def get_db():
-    if neo4j_version >= "4":
-        async with driver.session(database=database) as session_:
-            yield session_
-    else:
-        async with driver.session() as session_:
-            yield session_
+async def lifespan(app: FastAPI):
+    driver = AsyncGraphDatabase.driver(url, auth=(username, password))
+    shared_context["driver"] = driver
+    yield
+    await driver.close()
+
+
+def get_driver() -> neo4j.AsyncDriver:
+    return shared_context["driver"]
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -65,89 +76,91 @@ def serialize_cast(cast):
 
 @app.get("/graph")
 async def get_graph(limit: int = 100):
-    async def work(tx):
-        result = await tx.run(
-            "MATCH (m:Movie)<-[:ACTED_IN]-(a:Person) "
-            "RETURN m.title AS movie, collect(a.name) AS cast "
-            "LIMIT $limit",
-            {"limit": limit}
-        )
-        return [record_ async for record_ in result]
-
-    async with get_db() as db:
-        results = await db.execute_read(work)
-        nodes = []
-        rels = []
-        i = 0
-        for record in results:
-            nodes.append({"title": record["movie"], "label": "movie"})
-            target = i
-            i += 1
-            for name in record["cast"]:
-                actor = {"title": name, "label": "actor"}
-                try:
-                    source = nodes.index(actor)
-                except ValueError:
-                    nodes.append(actor)
-                    source = i
-                    i += 1
-                rels.append({"source": source, "target": target})
-        return {"nodes": nodes, "links": rels}
+    records, _, _ = await get_driver().execute_query(
+        query("""
+            MATCH (m:Movie)<-[:ACTED_IN]-(a:Person)
+            RETURN m.title AS movie, collect(a.name) AS cast
+            LIMIT $limit
+        """),
+        database_=database,
+        routing_="r",
+        limit=limit,
+    )
+    nodes = []
+    rels = []
+    i = 0
+    for record in records:
+        nodes.append({"title": record["movie"], "label": "movie"})
+        target = i
+        i += 1
+        for name in record["cast"]:
+            actor = {"title": name, "label": "actor"}
+            try:
+                source = nodes.index(actor)
+            except ValueError:
+                nodes.append(actor)
+                source = i
+                i += 1
+            rels.append({"source": source, "target": target})
+    return {"nodes": nodes, "links": rels}
 
 
 @app.get("/search")
 async def get_search(q: Optional[str] = None):
-    async def work(tx, q_):
-        result = await tx.run(
-            "MATCH (movie:Movie) "
-            "WHERE toLower(movie.title) CONTAINS toLower($title) "
-            "RETURN movie", {"title": q_}
-        )
-        return [record async for record in result]
-
     if q is None:
         return []
-    async with get_db() as db:
-        results = await db.execute_read(work, q)
-        return [serialize_movie(record["movie"]) for record in results]
+    records, _, _ = await get_driver().execute_query(
+        query("""
+            MATCH (movie:Movie)
+            WHERE toLower(movie.title) CONTAINS toLower($title)
+            RETURN movie
+        """),
+        title=q,
+        database_=database,
+        routing_="r",
+    )
+    return [serialize_movie(record["movie"]) for record in records]
 
 
 @app.get("/movie/{title}")
 async def get_movie(title: str):
-    async def work(tx):
-        result_ = await tx.run(
-            "MATCH (movie:Movie {title:$title}) "
-            "OPTIONAL MATCH (movie)<-[r]-(person:Person) "
-            "RETURN movie.title as title,"
-            "COLLECT([person.name, "
-            "HEAD(SPLIT(TOLOWER(TYPE(r)), '_')), r.roles]) AS cast "
-            "LIMIT 1",
-            {"title": title}
-        )
-        return await result_.single()
+    result = await get_driver().execute_query(
+        query("""
+            MATCH (movie:Movie {title:$title})
+            OPTIONAL MATCH (movie)<-[r]-(person:Person)
+            RETURN movie.title as title,
+            COLLECT(
+                [person.name, HEAD(SPLIT(TOLOWER(TYPE(r)), '_')), r.roles]
+            ) AS cast
+            LIMIT 1
+        """),
+        title=title,
+        database_=database,
+        routing_="r",
+        result_transformer_=neo4j.AsyncResult.single,
+    )
+    if result is None:
+        raise HTTPException(status_code=404, detail="Movie not found")
 
-    async with get_db() as db:
-        result = await db.execute_read(work)
-
-        return {"title": result["title"],
-                "cast": [serialize_cast(member)
-                         for member in result["cast"]]}
+    return {"title": result["title"],
+            "cast": [serialize_cast(member)
+                     for member in result["cast"]]}
 
 
 @app.post("/movie/{title}/vote")
 async def vote_in_movie(title: str):
-    async def work(tx):
-        result = await tx.run(
-            "MATCH (m:Movie {title: $title}) "
-            "SET m.votes = coalesce(m.votes, 0) + 1;",
-            {"title": title})
-        return await result.consume()
+    summary = await get_driver().execute_query(
+        query("""
+            MATCH (m:Movie {title: $title})
+            SET m.votes = coalesce(m.votes, 0) + 1;
+        """),
+        database_=database,
+        title=title,
+        result_transformer_=neo4j.AsyncResult.consume,
+    )
+    updates = summary.counters.properties_set
 
-    async with get_db() as db:
-        summary = await db.execute_write(work)
-        updates = summary.counters.properties_set
-
-        return {"updates": updates}
+    return {"updates": updates}
 
 
 if __name__ == "__main__":

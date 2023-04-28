@@ -1,9 +1,6 @@
-fastapi==0.95.1
-# starlette is a dependency of fastapi, but we also use it directly for some
-# lower-level things. Hence, we want to list it explicitly but leave its
-# version unspecified so that what ever version matches the one of fastapi will
-# be installed.
-starlette
+# common requirements
+-r requirements.txt
 
-neo4j==5.0.0a2
+# async web framework
 uvicorn==0.21.1
+fastapi==0.95.1

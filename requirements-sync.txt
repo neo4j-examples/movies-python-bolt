@@ -1,0 +1,5 @@
+# common requirements
+-r requirements.txt
+
+# sync web framework
+Flask==2.3.1

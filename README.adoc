@@ -1,7 +1,7 @@
 == Neo4j Movies Application: Quick Start
 
-image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-app.yml"]
-image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml/badge.svg?branch=main[alt="CI", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml"]
+image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-sync-app.yml/badge.svg?branch=main[alt="CI sync example", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-sync-app.yml"]
+image:https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml/badge.svg?branch=main[alt="CI async example", link="https://github.com/neo4j-examples/movies-python-bolt/actions/workflows/python-async-app.yml"]
 
 image::http://dev.assets.neo4j.com.s3.amazonaws.com/wp-content/uploads/movie_application.png[float=right,width=400]
 

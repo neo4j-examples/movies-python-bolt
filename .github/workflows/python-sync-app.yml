@@ -1,4 +1,4 @@
-name: Python-sync
+name: python-sync
 
 on:
   push:

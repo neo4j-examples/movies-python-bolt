@@ -1,4 +1,4 @@
-name: Python-async
+name: python-async
 
 on:
   push:

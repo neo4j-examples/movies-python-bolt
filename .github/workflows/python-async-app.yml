@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.11
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: 3.11
     - name: Install dependencies
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [ 20.x ]
         neo4j-version: [ "4.4", "4.4-enterprise", "5", "5-enterprise" ]
     services:
       neo4j:
@@ -59,7 +59,7 @@ jobs:
           --volume /tmp:/movies
     steps:
       - name: Set up Python 3.x
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: Upgrade pip
@@ -70,18 +70,18 @@ jobs:
       - name: Import dataset
         run: docker exec --interactive neo4j-e2e cypher-shell -u neo4j -p neo4jpass --file /movies/movies.cypher
       - name: Check out project sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-async.txt
       - name: Check out test harness sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: neo4j-examples/movies-harness
           path: e2e
           ref: ${{ github.event.client_payload.sha }}
-      - uses: cypress-io/github-action@v5
+      - uses: cypress-io/github-action@v6
         env:
           NEO4J_VERSION: ${{ matrix.neo4j-version }}
           NEO4J_URI: bolt://localhost

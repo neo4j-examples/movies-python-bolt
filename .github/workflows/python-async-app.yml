@@ -8,6 +8,9 @@ on:
   repository_dispatch:
     types: [ 'movie-harness-change' ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 

@@ -2,4 +2,4 @@
 -r requirements.txt
 
 # sync web framework
-Flask==3.0.2
+Flask==3.0.3

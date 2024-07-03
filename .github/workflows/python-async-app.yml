@@ -32,7 +32,7 @@ jobs:
         isort movies_sync.py --check --diff
     - name: Lint with ruff
       run: |
-        ruff check movies_async.py --show-source
+        ruff check movies_async.py --output-format=full
     - name: Check with pyright
       run: |
         pyright movies_async.py

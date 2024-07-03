@@ -27,7 +27,7 @@ Provision a database quickly with https://sandbox.neo4j.com/?usecase=movies[Neo4
 
 === Setup
 
-Install Python 3.7-3.11.
+Install Python 3.7-3.12.
 
 Then get yourself set up with link:http://docs.python-guide.org/en/latest/dev/virtualenvs/[virtualenv] so we don't break any other Python stuff you have on your machine. After you've got that installed let's set up an environment for our app:
 

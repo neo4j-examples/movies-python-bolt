@@ -1,4 +1,4 @@
 # common requirements for sync and async example
-neo4j==5.23.0
+neo4j==5.23.1
 
 typing_extensions==4.12.2

@@ -76,9 +76,7 @@ jobs:
       - name: Check out project sources
         uses: actions/checkout@v4
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-async.txt
+        run: pip install --upgrade -v -r requirements-async.txt
       - name: Check out test harness sources
         uses: actions/checkout@v4
         with:

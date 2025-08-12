@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
@@ -73,11 +73,11 @@ jobs:
       - name: Import dataset
         run: docker exec --interactive neo4j-e2e cypher-shell -u neo4j -p neo4jpass --file /movies/movies.cypher
       - name: Check out project sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install dependencies
         run: pip install --upgrade -v -r requirements-sync.txt
       - name: Check out test harness sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: neo4j-examples/movies-harness
           path: e2e

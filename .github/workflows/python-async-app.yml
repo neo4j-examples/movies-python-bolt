@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix:
         neo4j-version: [ "4.4", "4.4-enterprise", "5", "5-enterprise" ]
-        python-version: [ "3.9", "3.13" ]
+        python-version: [ "3.10", "3.13" ]
     services:
       neo4j:
         image: neo4j:${{ matrix.neo4j-version }}

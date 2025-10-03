@@ -92,5 +92,5 @@ jobs:
         with:
           working-directory: e2e
           browser: chrome
-          start: python ../movies_async.py
+          start: python -X dev -W error ../movies_async.py
           wait-on: 'http://localhost:8080'

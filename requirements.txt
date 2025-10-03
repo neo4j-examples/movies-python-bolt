@@ -1,8 +1,8 @@
 # common requirements for sync and async example
 
-# the driver
+# neo4j bolt driver to connect to the DBMS
 neo4j==6.0.2
-# optionally Rust extensions for better performance
+# optionally with Rust extensions for better performance
 neo4j-rust-ext==6.0.2.*
 
 typing_extensions==4.15.0

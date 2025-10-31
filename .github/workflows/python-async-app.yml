@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
     - name: Set up Python 3.12
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c  # v6.0.0
       with:
         python-version: 3.12
     - name: Install dependencies
@@ -62,7 +62,7 @@ jobs:
           --volume /tmp:/movies
     steps:
       - name: Set up Python 3.x
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c  # v6.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
@@ -73,16 +73,16 @@ jobs:
       - name: Import dataset
         run: docker exec --interactive neo4j-e2e cypher-shell -u neo4j -p neo4jpass --file /movies/movies.cypher
       - name: Check out project sources
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
       - name: Install dependencies
         run: pip install --upgrade -v -r requirements-async.txt
       - name: Check out test harness sources
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
         with:
           repository: neo4j-examples/movies-harness
           path: e2e
           ref: ${{ github.event.client_payload.sha }}
-      - uses: cypress-io/github-action@v6
+      - uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c  # v6.10.3
         env:
           NEO4J_VERSION: ${{ matrix.neo4j-version }}
           NEO4J_URI: bolt://localhost

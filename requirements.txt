@@ -3,6 +3,6 @@
 # neo4j bolt driver to connect to the DBMS
 neo4j==6.0.3
 # optionally with Rust extensions for better performance
-neo4j-rust-ext==6.0.2.*
+neo4j-rust-ext==6.0.3.*
 
 typing_extensions==4.15.0

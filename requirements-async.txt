@@ -3,4 +3,4 @@
 
 # async web framework
 uvicorn==0.44.0
-fastapi==0.135.3
+fastapi==0.136.0

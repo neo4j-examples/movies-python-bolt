@@ -2,5 +2,5 @@
 -r requirements.txt
 
 # async web framework
-uvicorn==0.48.0
+uvicorn==0.49.0
 fastapi==0.136.3

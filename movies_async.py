@@ -19,14 +19,13 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from textwrap import dedent
-from typing import Optional, cast
+from typing import cast
 
 import neo4j
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from neo4j import AsyncGraphDatabase
 from typing_extensions import LiteralString
-
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,7 +36,7 @@ password = os.getenv("NEO4J_PASSWORD", "movies")
 neo4j_version = os.getenv("NEO4J_VERSION", "4")
 database = os.getenv("NEO4J_DATABASE", "movies")
 
-port = int(os.getenv("PORT", 8080))
+port = int(os.getenv("PORT", "8080"))
 
 shared_context = {}
 
@@ -122,7 +121,7 @@ async def get_graph(limit: int = 100):
 
 
 @app.get("/search")
-async def get_search(q: Optional[str] = None):
+async def get_search(q: str | None = None):
     if q is None:
         return []
     records, _, _ = await get_driver().execute_query(
@@ -183,6 +182,6 @@ if __name__ == "__main__":
     import uvicorn
 
     logging.root.setLevel(logging.INFO)
-    logging.info("Starting on port %d, database is at %s", port, url)
+    logging.root.info("Starting on port %d, database is at %s", port, url)
 
     uvicorn.run(app, port=port)

@@ -34,7 +34,7 @@ password = os.getenv("NEO4J_PASSWORD", "movies")
 neo4j_version = os.getenv("NEO4J_VERSION", "4")
 database = os.getenv("NEO4J_DATABASE", "movies")
 
-port = int(os.getenv("PORT", 8080))
+port = int(os.getenv("PORT", "8080"))
 
 driver = GraphDatabase.driver(url, auth=basic_auth(username, password))
 
@@ -171,7 +171,7 @@ def vote_in_movie(title):
 
 if __name__ == "__main__":
     logging.root.setLevel(logging.INFO)
-    logging.info("Starting on port %d, database is at %s", port, url)
+    logging.root.info("Starting on port %d, database is at %s", port, url)
     try:
         app.run(port=port)
     finally:

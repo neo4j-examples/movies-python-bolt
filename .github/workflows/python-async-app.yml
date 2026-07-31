@@ -32,7 +32,9 @@ jobs:
         isort movies_sync.py --check --diff
     - name: Lint with ruff
       run: |
-        ruff check movies_async.py --output-format=full
+        ruff check movies_async.py \
+          --output-format full \
+          --config 'target-version = "py310"'
     - name: Check with pyright
       run: |
         pyright movies_async.py
